@@ -1,3 +1,4 @@
+#This is the maximum kinds of chars that can appear in the string
 NO_OF_CHARS = 95
 
 class Solution:
@@ -11,17 +12,14 @@ class Solution:
         prev_index = 0    # To store the previous index 
         i = 0
         
-        # Initialize the visited array as -1, -1 is used to indicate 
+        # Initialize the visited array as -1, indicating 
         # that character has not been visited yet. 
         visited = [-1] * NO_OF_CHARS 
         
-        # Mark first character as visited by storing the index of 
-        # first character in visited array. 
+        # Mark first character as visited by storing the index 0
+        # Assume all the characters have ascii code greater than 40
         visited[ord(string[0])-40] = 0
         
-        # Start from the second character. First character is already 
-        # processed (cur_len and max_len are initialized as 1, and 
-        # visited[str[0]] is set 
         for i in range(1,n): 
             prev_index = visited[ord(string[i])-40] 
         
@@ -35,7 +33,6 @@ class Solution:
             # NRCS, then update NRCS to start from the next character of 
             # previous instance. 
             else: 
-                # Also, when we are changing the NRCS, we should also 
                 # check whether length of the previous NRCS was greater 
                 # than max_len or not. 
                 if cur_len > max_len: 
@@ -46,8 +43,7 @@ class Solution:
             # update the index of current character 
             visited[ord(string[i])-40] = i 
              
-        # Compare the length of last NRCS with max_len and update 
-        # max_len if needed 
+        # Compare the length of last NRCS with max_len and update if needed
         if cur_len > max_len: 
             max_len = cur_len 
         
