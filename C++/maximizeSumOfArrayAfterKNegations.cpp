@@ -8,7 +8,11 @@ public:
             i++;  K--;
         }
         if (i<l && A[i]>=0 && K%2==1){
-            A[i] = -A[i];
+            if (i>0 && A[i-1] < A[i]){
+                A[i-1] = -A[i-1];
+            }else{
+                A[i] = -A[i];   
+            }
         }
         int sum = 0;
         for (int a:A){
