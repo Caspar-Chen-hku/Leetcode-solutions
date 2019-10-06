@@ -1,50 +1,48 @@
 class Solution {
 public:
+    
+    int find(vector<int>& union_find, int idx){
+        if(union_find[idx] == -1)   return idx;
+        return find(union_find,union_find[idx]);
+    }
+    
+    void Union(vector<int>&union_find, int idx1, int idx2){
+        int parent1 = find(union_find,idx1);
+        int parent2 = find(union_find,idx2);
+        if(parent1 != parent2)  union_find[parent1] = parent2;
+    }
+
     vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
         vector<vector<string>> res;
-        vector<int> root(accounts.size());
-        for(int i = 0; i < accounts.size(); i++) root[i] = i;
+        int n = accounts.size();
         
-        unordered_map<string, int> r_map;
+        vector<int> union_find(n,-1);
+        map<string,int> mailUser;
+        map<int,vector<string>> mails;
         
-        for(int i = 0; i < accounts.size(); i++) {
-            vector<string> a = accounts[i];
-            for(int j = 1; j < a.size(); j++) {
-                if(r_map.find(a[j]) != r_map.end()) {
-                    int p = r_map[a[j]];
-                    int p1 = findParent(root, i);
-                    int p2 = findParent(root, p);
-                    if(p1 != p2) root[p1] = p2;
-                } else {
-                    r_map[a[j]] = i;
+        for(int i=0; i<accounts.size(); i++){
+            for(int j=1; j<accounts[i].size(); j++){
+                if(mailUser.count(accounts[i][j])){
+                    int idx1 = find(union_find,i);
+                    int idx2 = find(union_find,mailUser[accounts[i][j]]);
+                    Union(union_find,idx1,idx2);
                 }
+                mailUser[accounts[i][j]] = i;
             }
         }
         
-        unordered_map<int, vector<string>> res_map;
-        for(auto& e : r_map) {
-            string email = e.first;
-            int parent = e.second;
-            int r = findParent(root, parent);
-            res_map[r].push_back(email);
+        for(auto pair:mailUser){
+            int user = find(union_find,pair.second);
+            mails[user].push_back(pair.first);
         }
         
-         for(auto& e : res_map) {
-             int idx = e.first;
-             vector<string> emails = e.second;
-             sort(emails.begin(), emails.end());
-             emails.insert(emails.begin(), accounts[idx][0]);
-             res.push_back(emails);
+        for(auto pair:mails){
+            vector<string> temp = pair.second;
+            sort(temp.begin(),temp.end());
+            temp.insert(temp.begin(),accounts[pair.first][0]);
+            res.push_back(temp); 
         }
+        
         return res;
-    }
-    
-private:
-    int findParent(vector<int> & root, int p) {
-        while(p != root[p]) {
-            root[p] = root[root[p]];
-            p = root[p];
-        }
-        return p;
     }
 };
